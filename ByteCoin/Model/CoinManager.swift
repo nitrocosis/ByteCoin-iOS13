@@ -27,34 +27,31 @@ struct CoinManager {
     
     func getCoinPrice(for currency: String) {
         let URLString = "\(baseURL)/\(currency)?apikey=\(apiKey)"
-
-         if let url = URL(string: URLString) {
-                   
-                   let session = URLSession(configuration: .default)
-                   
-                   let task = session.dataTask(with: url) { (data, response, error) in
-                       
-                       if error != nil {
-                           self.delegate?.didFailWithError(erorr: error!)
-                           return
-                       }
-                       
-                       if let safeData = data {
-           
-                           if let bitcoinPrice = self.parseJSON(safeData) {
-                               let bitcoinString = String(format: "%.2f", bitcoinPrice)
-                               self.delegate?.didUpdatePrice(price: bitcoinString, currency: currency)
-                           }
-
-                       }
-                       
-                   }
-                   task.resume()
-               }
+        
+        if let url = URL(string: URLString) {
+            
+            let session = URLSession(configuration: .default)
+            
+            let task = session.dataTask(with: url) { (data, response, error) in
+                
+                if error != nil {
+                    self.delegate?.didFailWithError(erorr: error!)
+                    return
+                }
+                
+                if let safeData = data {
+                    
+                    if let bitcoinPrice = self.parseJSON(safeData) {
+                        let bitcoinString = String(format: "%.2f", bitcoinPrice)
+                        self.delegate?.didUpdatePrice(price: bitcoinString, currency: currency)
+                    }
+                    
+                }
+                
+            }
+            task.resume()
+        }
     }
-    
-    
-   
     
     func parseJSON(_ data: Data) -> Double? {
         let decoder = JSONDecoder()
